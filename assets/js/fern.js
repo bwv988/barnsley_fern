@@ -7,7 +7,7 @@ var p5_app = function(p) {
     var SCREENX = 800;
     var SCREENY = 800;
     var SCALE = 70;
-    var MAX_ITER = 10;
+    var MAX_ITER = 200000;
 
     var COLS = [
         p.color(4, 91, 0),
@@ -56,54 +56,63 @@ var p5_app = function(p) {
 
     function get_index(value, vals) {
         var ret;
-
-        for (var i = 0; i < vals.length; i++) {
+        for (var i = 0; i < vals.length; ++i) {
             ret = i;
             if (value < vals[i]) {
                 break;
             }
         }
-        console.debug(ret);
         return ret;
-    };
+    }
 
     // Transformation calculation
     function trans(i, vec) {
         return(math.add(math.multiply(A[i], vec), b[i]));
-    };
+    }
 
     // Apply the transformation.
     function transform_point(vec) {
-        var func_system = get_index(math.random(), p);
-
+        var func_system = get_index(math.random(), prob);
         return(trans(func_system, vec));
-    };
+    }
 
-    p.pick_col = function(iter, max_iter) {
+    function pick_col(iter, max_iter) {
         var vals = [0.25, 0.5, 0.75, 1];
         var pr = iter / max_iter;
-
         p.stroke(COLS[get_index(pr, vals)]);
-    };
+    }
+    
+    function update_frame() {
+        var v = cfg.vec.valueOf();
+        pick_col(cfg.iter, MAX_ITER);
+        p.point(cfg.centerx + SCALE * v[0], cfg.centery - SCALE * v[1]);
+        cfg.vec = transform_point(cfg.vec);
+        cfg.iter--;    
+    }
 
+    // This is for drawing the entire IFS at once.
+    function draw_all() {
+        while(cfg.iter > 0) {
+            update_frame();
+        }    
+    }
+    
     // Main p5.js functions.
     p.setup = function() {
         p.createCanvas(SCREENX, SCREENY);
         p.background(0);
-    };
+        p.frameRate(60);
+        
+        //draw_all();
+    }
 
     p.draw = function() {
-        if (cfg.iter == 0) {
+        if (cfg.iter === 0) {
             // Stop drawing after MAXITER is reached.
             return false;
         }
-
-        var v = cfg.vec.valueOf();
-        p.pick_col(cfg.iter, MAX_ITER);
-        p.point(cfg.centerx + SCALE * v[0], cfg.centery - SCALE * v[1]);
-        cfg.vec = transform_point(cfg.vec);
-        cfg.iter--;
+        update_frame();
     }
 }
-
+ 
 var myp5 = new p5(p5_app);
