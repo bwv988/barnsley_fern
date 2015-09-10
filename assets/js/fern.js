@@ -6,7 +6,7 @@
 // Define the affine transformation parameters.
 var A1 = math.matrix([[0.85, 0.04], [-0.04, 0.85]]);
 var A2 = math.matrix([[0.2, -0.26], [0.23, 0.22]]);
-var A3 = math.matrix([[0.15, 0.28], [0.26, 0.24]]);
+var A3 = math.matrix([[-0.15, 0.28], [0.26, 0.24]]);
 var A4 = math.matrix([[0, 0], [0, 0.16]]);
 
 var b1 = math.matrix([0, 1.6]);
@@ -18,24 +18,25 @@ var b4 = math.matrix([0, 0]);
 var p = [0.85, 0.92, 0.99, 1.00];
 
 // Transformation calculations.
+// FIXME: There must be a smarter way of doing this in JS!
 function trans1(vec) {
-    return(math.multiply(A1, vec) + b1);
+    return(math.add(math.multiply(A1, vec), b1));
 }
 
 function trans2(vec) {
-    return(math.multiply(A2, vec) + b2);
+    return(math.add(math.multiply(A2, vec), b2));
 }
 
 function trans3(vec) {
-    return(math.multiply(A3, vec) + b3);
+    return(math.add(math.multiply(A3, vec), b3));
 }
 
 function trans4(vec) {
-    return(math.multiply(A4, vec) + b4);
+    return(math.add(math.multiply(A4, vec), b4));
 }
 
 
-function fern_point(vec) {
+function transform_point(vec) {
     var r = math.random();
 
     if (r < p[0]) {
@@ -50,17 +51,33 @@ function fern_point(vec) {
 }
 
 function setup() {
+    createCanvas(800, 600)
     background(0);
+    draw_points();
+}
+
+function draw_points() {
+    // Initial values.
+    var SCALE = 50;
+    var CENTERX = 400;
+    var CENTERY = 600;
+    var vec = math.matrix([0, 0]);
+    var col = color(159, 210, 4);
+    var iter = 200000;
+  
+    var v;
+    
+    stroke(col);
+    
+    while(iter > 0) {
+        v = vec.valueOf();
+        point(CENTERX + SCALE * v[0], CENTERY - SCALE * v[1]);
+        
+        vec = transform_point(vec);
+        iter--;
+    }    
 }
 
 function draw() {
-    // Initial values.
-    var vec = math.matrix([0.5, 0.5]);
-    var iter = 10;
 
-    while(iter > 0) {
-        console.log(vec);
-        vec = fern_point(vec);
-        iter--;
-    }
 }
