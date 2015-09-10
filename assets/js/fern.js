@@ -6,7 +6,7 @@
 var p5_app = function(p) {
     var SCREENX = 800;
     var SCREENY = 800;
-    var SCALE = 70;
+    var SCALE = 700;
     var MAX_ITER = 10;
 
     var COLS = [
@@ -56,14 +56,13 @@ var p5_app = function(p) {
 
     function get_index(value, vals) {
         var ret;
-
-        for (var i = 0; i < vals.length; i++) {
+        for (var i = 0; i < vals.length; ++i) {
             ret = i;
             if (value < vals[i]) {
                 break;
             }
-        }
-        console.debug(ret);
+        };
+        console.debug(ret)
         return ret;
     };
 
@@ -74,8 +73,7 @@ var p5_app = function(p) {
 
     // Apply the transformation.
     function transform_point(vec) {
-        var func_system = get_index(math.random(), p);
-
+        var func_system = get_index(math.random(), prob);
         return(trans(func_system, vec));
     };
 
