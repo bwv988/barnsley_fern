@@ -50,32 +50,53 @@ function transform_point(vec) {
     }
 }
 
-function setup() {
-    createCanvas(800, 600)
-    background(0);
-    draw_points();
+
+function pic_col(iter, max_iter) {
+    var COL1 = color(4, 91, 0);
+    var COL2 = color(9, 183, 0);
+    var COL3 = color(12, 249, 0);
+    var COL4 = color(90, 255, 81);
+    
+    var p = iter / max_iter;
+    
+    if (p < 0.25) {
+        stroke(COL1);
+    } else if (p < 0.5) {
+        stroke(COL2);
+    } else if (p < 0.75) {
+        stroke(COL3);
+    } else {
+        stroke(COL4);
+    }
 }
 
 function draw_points() {
     // Initial values.
+    
     var SCALE = 50;
     var CENTERX = 400;
     var CENTERY = 600;
+    var MAX_ITER = 100000;
+   
     var vec = math.matrix([0, 0]);
-    var col = color(159, 210, 4);
-    var iter = 200000;
+    var iter = MAX_ITER;
   
-    var v;
-    
-    stroke(col);
-    
+
     while(iter > 0) {
-        v = vec.valueOf();
+        var v = vec.valueOf();
+        pic_col(iter, MAX_ITER);
         point(CENTERX + SCALE * v[0], CENTERY - SCALE * v[1]);
-        
         vec = transform_point(vec);
         iter--;
-    }    
+    }
+}
+
+
+// Main p5.js functions.
+function setup() {
+    createCanvas(800, 600)
+    background(0);
+    draw_points();
 }
 
 function draw() {
