@@ -9,6 +9,7 @@ var p5_app = function(p) {
     var SCALE = 70;
     var MAX_ITER = 200000;
 
+
     var COLS = [
         p.color(4, 91, 0),
         p.color(9, 183, 0),
@@ -61,6 +62,7 @@ var p5_app = function(p) {
             if (value < vals[i]) {
                 break;
             }
+
         }
         return ret;
     }
